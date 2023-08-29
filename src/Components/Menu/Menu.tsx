@@ -10,7 +10,7 @@ const Menu = () => {
     const { selectedPage } = useSelector((state: any) => state.app);
     const dispatch = useDispatch();
 
-    const [menuDisplay, setMenuDisplay] = useState(false);
+    const [menuDisplay, setMenuDisplay] = useState(true);
 
     return (
         <div className={`

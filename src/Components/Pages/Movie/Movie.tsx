@@ -1,6 +1,10 @@
+import { useParams } from 'react-router';
+
 const Movie = () => {
+    const { name } = useParams();
+
     return (
-        <div>movie</div>
+        <div>Film: {name}</div>
     )
 }
 

@@ -1,6 +1,6 @@
-const MovieGallery = () => {
+const MovieGallery = ({ text }: { text: string }) => {
     return (
-        <div>movie gallet</div>
+        <div>{text}</div>
     )
 }
 
