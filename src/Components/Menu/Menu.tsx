@@ -1,4 +1,5 @@
-import { useSelector, useDispatch } from "react-redux"
+import { useSelector, useDispatch } from "react-redux";
+import { Link } from "react-router-dom";
 import { SELECTED_PAGES } from "../../Utilities/Settings";
 import { BiSolidCameraMovie } from 'react-icons/bi';
 import { LuMenu } from 'react-icons/lu';
@@ -33,26 +34,38 @@ const Menu = () => {
                  pt-20 flex flex-col gap-5 text-xl text-center
                   md:text-right md:relative md:translate-y-0
                    tracking-wide  transition-all`}>
-                <div className={`relative transition-all hover:scale-110 hover:cursor-pointer
+                <Link to="/" className={`relative transition-all hover:scale-110 hover:cursor-pointer
                                 ${selectedPage === SELECTED_PAGES.TRENDING ? `` : `text-slate-300/50`}`}
-                    onClick={() => dispatch(setApp(SELECTED_PAGES.TRENDING))}>
+                    onClick={() => {
+                        setMenuDisplay((prev: boolean) => true)
+                        dispatch(setApp(SELECTED_PAGES.TRENDING))
+                    }} >
                     Trending
-                </div>
-                <div className={`relative transition-all hover:scale-110 hover:cursor-pointer
+                </Link>
+                <Link to="/popular" className={`relative transition-all hover:scale-110 hover:cursor-pointer
                                 ${selectedPage === SELECTED_PAGES.POPULAR ? `` : `text-slate-300/50`}`}
-                    onClick={() => dispatch(setApp(SELECTED_PAGES.POPULAR))}>
+                    onClick={() => {
+                        setMenuDisplay((prev: boolean) => true)
+                        dispatch(setApp(SELECTED_PAGES.POPULAR))
+                    }}>
                     Popular
-                </div>
-                <div className={`relative transition-all hover:scale-110 hover:cursor-pointer
+                </Link>
+                <Link to="/toprated" className={`relative transition-all hover:scale-110 hover:cursor-pointer
                                 ${selectedPage === SELECTED_PAGES.TOP_RATED ? `` : `text-slate-300/50`}`}
-                    onClick={() => dispatch(setApp(SELECTED_PAGES.TOP_RATED))}>
+                    onClick={() => {
+                        setMenuDisplay((prev: boolean) => true)
+                        dispatch(setApp(SELECTED_PAGES.TOP_RATED))
+                    }}>
                     Top Rated
-                </div>
-                <div className={`relative transition-all hover:scale-110 hover:cursor-pointer
+                </Link>
+                <Link to="/upcoming" className={`relative transition-all hover:scale-110 hover:cursor-pointer
                                 ${selectedPage === SELECTED_PAGES.UPCOMING ? `` : `text-slate-300/50`}`}
-                    onClick={() => dispatch(setApp(SELECTED_PAGES.UPCOMING))}>
+                    onClick={() => {
+                        setMenuDisplay((prev: boolean) => true)
+                        dispatch(setApp(SELECTED_PAGES.UPCOMING))
+                    }}>
                     Upcoming
-                </div>
+                </Link>
             </div>
 
         </div >
