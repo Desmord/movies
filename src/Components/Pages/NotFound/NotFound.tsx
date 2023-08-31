@@ -1,6 +1,6 @@
 const NotFound = () => {
     return (
-        <div>page not found</div>
+        <div className="absolute md:relative">page not found</div>
     )
 }
 
