@@ -1,4 +1,4 @@
-import React, { Suspense, useEffect, useRef } from 'react';
+import { Suspense, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Img from './Img';
 
@@ -110,11 +110,11 @@ const UseMovieGallery = ({
                                 className={`${styles.movie}`}
                                 onClick={() => showMovie(ele.name)} >
                                 <Suspense fallback={<span></span>}>
-                                    <Img src={`./assets/images/stars.jpg`} />
-                                    <div className={styles.data}>
-                                        <div>{ele.name}</div>
-                                        <div>{ele.releaseDate}</div>
-                                    </div>
+                                        <Img src={`./assets/images/stars.jpg`} />
+                                        <div className={styles.data}>
+                                            <div>{ele.name}</div>
+                                            <div>{ele.releaseDate}</div>
+                                        </div>
                                 </Suspense>
                             </div >
                         )

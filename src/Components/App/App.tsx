@@ -1,7 +1,6 @@
 import { Provider } from 'react-redux';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import Store from "../../Redux/Store";
-import { useEffect } from 'react'
 
 import Menu from '../Menu/Menu';
 import MovieGallery from '../Pages/MovieGallery/MovieGallery';
@@ -12,13 +11,9 @@ import styles from "./App.module.scss";
 
 function App() {
 
-  useEffect(() => {
-    console.log(`Wczytujemy`)
-  }, [])
-
   return (
-    <div className={`
-      grid grid-cols-1 text-slate-300 h-screen ${styles.container}
+    <div className={`lg:h-screen lg:overflow-hidden
+      grid grid-cols-1 text-slate-300  ${styles.container}
       md:grid-cols-7  lg:grid-cols-3  xl:grid-cols-4
     `}>
       <Provider store={Store}>

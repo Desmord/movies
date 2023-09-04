@@ -22,7 +22,7 @@ const MovieGallery = ({ text }: { text: string }) => {
         { name: `one piece`, currentTransition: 0, releaseDate: `2023-20-50` },
     ])
 
-    const { slide, getMovies, showMovie } = UseMovieGallery({
+    const { slide, getMovies, } = UseMovieGallery({
         currentSlide,
         setCurrentSlide,
         movies,

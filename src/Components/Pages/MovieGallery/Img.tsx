@@ -1,7 +1,7 @@
 
 const Img = ({ src }: { src: string }) => {
     return (
-        <img src={src} alt="Mikołaj Chojnacki"></img>
+        <img src={src} alt="movie"></img>
     )
 }
 
