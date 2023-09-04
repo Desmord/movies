@@ -17,9 +17,8 @@ const Menu = () => {
         <div className={`
             flex flex-col col-span-1 w-full justify-self-end justify-start items-center p-20
             md:justify-self-end md:justify-start md:items-end
-            md:col-span-3 lg:col-span-1 xl:col-span-1 h-full
-            transition-all z-10
-            ${menuDisplay ? `` : `bg-slate-900 bg-opacity-80 md:bg-transparent`}
+            md:col-span-3 lg:col-span-1 xl:col-span-1 h-full         
+            ${menuDisplay ? `` : `bg-slate-900 bg-opacity-80 md:bg-transparent  transition-all z-20`}
             `}>
             <div className="hidden md:flex gap-3 text-slate-200 text-4xl font-bold tracking-wider">
                 <BiSolidCameraMovie />
@@ -27,7 +26,7 @@ const Menu = () => {
             </div>
             <LuMenu className={`
             absolute top-5 right-5 block md:hidden text-slate-200 text-4xl
-            transition-all hover:scale-110 hover:cursor-pointer
+            transition-all hover:scale-110 hover:cursor-pointer transition-all z-20
             `}
                 onClick={() => setMenuDisplay((prev: boolean) => !prev)} />
             <div className={`${menuDisplay ? `absolute top-0 -translate-y-full` : `translate-y-0`} 
