@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { Provider } from 'react-redux';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import Store from "../../Redux/Store";
@@ -12,7 +13,7 @@ import styles from "./App.module.scss";
 function App() {
 
   return (
-    <div className={`lg:h-screen lg:overflow-hidden
+    <div className={`h-screen lg:h-screen lg:overflow-hidden
       grid grid-cols-1 text-slate-300  ${styles.container}
       md:grid-cols-7  lg:grid-cols-3  xl:grid-cols-4
     `}>

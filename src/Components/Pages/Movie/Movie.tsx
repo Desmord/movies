@@ -7,15 +7,23 @@ const Movie = () => {
     const { name } = useParams();
 
     return (
-        <div className='relative w-full grid lg:grid-cols-3 -mt-40 md:mt-0
-        col-span-1 md:col-span-4 lg:col-span-2 xl:col-span-3 grid-cols-1 grid-rows-2'>
+        <div className='absolute md:relative w-full h-full 
+        grid  grid-cols-1 grid-rows-[320px,1fr]
+        col-span-1 md:col-span-4 lg:col-span-2 xl:col-span-3
+        lg:grid-cols-3'>
             <Suspense fallback={<span></span>}>
-                <span className='p-2 pt-20 md:p-5 md:pt-20 flex col-span-1 justify-center w-full
+                <span className='
+                flex justify-center
+                p-4 col-span-1 w-full 
                 lg:block lg:p-2 lg:pt-40'>
                     <Img src={`/assets/images/stars.jpg`} />
                 </span>
             </Suspense>
-            <div className='col-span-1 flex flex-col p-10 pt-2 lg:p-10 lg:pt-40 lg:col-span-2'>
+            <div className=' 
+            col-span-1 flex flex-col
+            p-5 sm:p-10 
+             lg:p-10 lg:pt-40 lg:col-span-2
+            '>
                 <div className='text-3xl font-bold'>{name}</div>
                 <div className='text-sm pt-2 pb-2'>
                     <span>2023-04-03</span>

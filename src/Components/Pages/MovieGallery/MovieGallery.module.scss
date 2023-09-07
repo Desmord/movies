@@ -144,3 +144,21 @@
         opacity: 1;
     }
 }
+
+.hideContainer {
+    animation-name: hide;
+    animation-duration: 0.5s;
+    animation-timing-function: ease-in-out;
+    animation-fill-mode: forwards;
+
+}
+
+@keyframes hide {
+    from {
+        opacity: 1;
+    }
+
+    to {
+        opacity: 0;
+    }
+}

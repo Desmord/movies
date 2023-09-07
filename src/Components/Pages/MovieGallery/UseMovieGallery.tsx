@@ -1,5 +1,17 @@
-import { Suspense, useEffect, useRef } from 'react';
+import {
+    Suspense,
+    useEffect,
+    useRef,
+    useState,
+} from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import {
+    setTrending,
+    setPopular,
+    setTopRated,
+    setUpComing,
+} from '../../../Redux/MoviesSlice';
 import Img from './Img';
 
 import styles from './MovieGallery.module.scss';
@@ -13,17 +25,18 @@ type MoviesType = {
 const UseMovieGallery = ({
     currentSlide,
     setCurrentSlide,
-    movies,
-    setMovies,
+    container,
 }: {
     currentSlide: number,
     setCurrentSlide: Function,
-    movies: MoviesType[],
-    setMovies: Function,
+    container: any,
 }) => {
 
     const navigate = useNavigate();
+    const dispatch = useDispatch();
     const timeRef = useRef<any>(null);
+    const appMovies = useSelector((state: any) => state.movies)
+    const [movies, setMovies] = useState<MoviesType[]>([])
 
     const updateCurrentTransition = (moviesToupdate: MoviesType[]) => {
         return moviesToupdate.map((movie) => {
@@ -80,41 +93,44 @@ const UseMovieGallery = ({
 
     }
 
-    const updateMovies = (newMovies: MoviesType[]) => setMovies(newMovies)
-
     const slide = () => {
 
         let wrappers = document.querySelectorAll<HTMLElement>(`.${styles.movie}`)
-        let newMovies = [...movies]
+        let newMovies = [...movies] as any[]
 
         newMovies = updateCurrentTransition(newMovies)
         setCurrentTransitionToBegining(newMovies)
         transformPosition(wrappers, newMovies)
-        updateMovies(newMovies)
+        setMovies(newMovies)
 
     }
 
     const showMovie = (movieName: string) => {
-        navigate(`/movie/${movieName}`)
+        container.current.classList.add(`${styles.hideContainer}`)
+        setTimeout(() => {
+            navigate(`/movie/${movieName}`)
+        }, 600)
     }
 
 
-    const getMovies = (movies: MoviesType[]) => {
+    const getMovies = () => {
+
         return (
             <>
                 {
                     movies.map((ele: MoviesType, index: number) => {
+
                         return (
                             <div
                                 key={index}
                                 className={`${styles.movie}`}
                                 onClick={() => showMovie(ele.name)} >
                                 <Suspense fallback={<span></span>}>
-                                        <Img src={`./assets/images/stars.jpg`} />
-                                        <div className={styles.data}>
-                                            <div>{ele.name}</div>
-                                            <div>{ele.releaseDate}</div>
-                                        </div>
+                                    <Img src={`./assets/images/stars.jpg`} />
+                                    <div className={styles.data}>
+                                        <div>{ele.name}</div>
+                                        <div>{ele.releaseDate}</div>
+                                    </div>
                                 </Suspense>
                             </div >
                         )
@@ -122,6 +138,53 @@ const UseMovieGallery = ({
                 }
             </>
         )
+    }
+
+    const isMoviesEmpty = (movies: any) => {
+        if (movies.length) {
+            return true
+        } else {
+            return false
+        }
+    }
+
+
+    const download = async () => {
+
+        if (!isMoviesEmpty(appMovies.trending)) {
+
+            const options = {
+                method: 'GET',
+                headers: {
+                    accept: 'application/json',
+                    Authorization: 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI1ZjlhMDIyMGEzNmIwZDY5NmNjMTdmYTZjMTkzMDc4ZiIsInN1YiI6IjY0ZWRmNWM3MDZmOTg0MDBhZTRhY2MyNCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.V64bvbninT41jRifOpdjlTtYPDcggdLdeXheIuhrRUg'
+                }
+            };
+
+            try {
+
+                const trendingRaw = await fetch('https://api.themoviedb.org/3/movie/now_playing?language=en-US&page=1', options);
+                const popularRaw = await fetch('https://api.themoviedb.org/3/movie/popular?language=en-US&page=1', options);
+                const topRatedRaw = await fetch('https://api.themoviedb.org/3/movie/top_rated?language=en-US&page=1', options);
+                const upcomingRaw = await fetch('https://api.themoviedb.org/3/movie/upcoming?language=en-US&page=1', options);
+
+                const trending = await trendingRaw.json();
+                const popular = await popularRaw.json();
+                const topRated = await topRatedRaw.json();
+                const upcoming = await upcomingRaw.json();
+
+                dispatch(setTrending(trending.results.slice(0, 6)));
+                dispatch(setPopular(popular.results.slice(0, 6)));
+                dispatch(setTopRated(topRated.results.slice(0, 6)));
+                dispatch(setUpComing(upcoming.results.slice(0, 7)));
+
+
+            } catch (err) {
+                console.log(err)
+            }
+
+        }
+
     }
 
     const startSlide = () => {
@@ -132,11 +195,32 @@ const UseMovieGallery = ({
     }
 
     useEffect(() => {
+        download()
+    }, [])
+
+    useEffect(() => {
         startSlide()
         return () => clearTimeout(timeRef.current)
     })
 
-    return { slide, getMovies, showMovie }
+    useEffect(() => {
+        let objectToSave = appMovies.trending;
+        objectToSave = objectToSave.map((obj: any) => ({
+            currentTransition: 0,
+            name: obj.original_title,
+            releaseDate: obj.release_date,
+        }))
+        setMovies(objectToSave)
+    }, [appMovies])
+
+
+    //  w zaleznosci od zaznaczonej wartosci odswierzamy odpowiednie filmy do setMOvies
+    //          albo przeniesc currentDisplay do contekstu zeby bylo dla całej app
+
+    return {
+        getMovies,
+        showMovie
+    }
 
 }
 
