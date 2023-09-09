@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { SELECTED_PAGES } from "../../Utilities/Settings";
 import { BiSolidCameraMovie } from 'react-icons/bi';
 import { LuMenu } from 'react-icons/lu';
-import { setApp } from "../../Redux/AppSlice";
+import { setAppSelectedPage } from "../../Redux/AppSlice";
 import { useState } from 'react'
 
 const Menu = () => {
@@ -37,7 +37,7 @@ const Menu = () => {
                                 ${selectedPage === SELECTED_PAGES.TRENDING ? `` : `text-slate-300/50`}`}
                     onClick={() => {
                         setMenuDisplay((prev: boolean) => true)
-                        dispatch(setApp(SELECTED_PAGES.TRENDING))
+                        dispatch(setAppSelectedPage(SELECTED_PAGES.TRENDING))
                     }} >
                     Trending
                 </Link>
@@ -45,7 +45,7 @@ const Menu = () => {
                                 ${selectedPage === SELECTED_PAGES.POPULAR ? `` : `text-slate-300/50`}`}
                     onClick={() => {
                         setMenuDisplay((prev: boolean) => true)
-                        dispatch(setApp(SELECTED_PAGES.POPULAR))
+                        dispatch(setAppSelectedPage(SELECTED_PAGES.POPULAR))
                     }}>
                     Popular
                 </Link>
@@ -53,7 +53,7 @@ const Menu = () => {
                                 ${selectedPage === SELECTED_PAGES.TOP_RATED ? `` : `text-slate-300/50`}`}
                     onClick={() => {
                         setMenuDisplay((prev: boolean) => true)
-                        dispatch(setApp(SELECTED_PAGES.TOP_RATED))
+                        dispatch(setAppSelectedPage(SELECTED_PAGES.TOP_RATED))
                     }}>
                     Top Rated
                 </Link>
@@ -61,7 +61,7 @@ const Menu = () => {
                                 ${selectedPage === SELECTED_PAGES.UPCOMING ? `` : `text-slate-300/50`}`}
                     onClick={() => {
                         setMenuDisplay((prev: boolean) => true)
-                        dispatch(setApp(SELECTED_PAGES.UPCOMING))
+                        dispatch(setAppSelectedPage(SELECTED_PAGES.UPCOMING))
                     }}>
                     Upcoming
                 </Link>

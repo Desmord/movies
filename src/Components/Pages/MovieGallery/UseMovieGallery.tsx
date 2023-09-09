@@ -12,6 +12,7 @@ import {
     setTopRated,
     setUpComing,
 } from '../../../Redux/MoviesSlice';
+import { SELECTED_PAGES } from '../../../Utilities/Settings';
 import Img from './Img';
 
 import styles from './MovieGallery.module.scss';
@@ -20,6 +21,8 @@ type MoviesType = {
     name: string,
     currentTransition: number,
     releaseDate: string,
+    id: string,
+    poster_path: string,
 }
 
 const UseMovieGallery = ({
@@ -35,7 +38,10 @@ const UseMovieGallery = ({
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const timeRef = useRef<any>(null);
+
     const appMovies = useSelector((state: any) => state.movies)
+    const selectedMovies = useSelector((state: any) => state.app.selectedPage)
+
     const [movies, setMovies] = useState<MoviesType[]>([])
 
     const updateCurrentTransition = (moviesToupdate: MoviesType[]) => {
@@ -105,10 +111,10 @@ const UseMovieGallery = ({
 
     }
 
-    const showMovie = (movieName: string) => {
+    const showMovie = (movieid: string) => {
         container.current.classList.add(`${styles.hideContainer}`)
         setTimeout(() => {
-            navigate(`/movie/${movieName}`)
+            navigate(`/movie/${movieid}`)
         }, 600)
     }
 
@@ -119,14 +125,13 @@ const UseMovieGallery = ({
             <>
                 {
                     movies.map((ele: MoviesType, index: number) => {
-
                         return (
                             <div
                                 key={index}
                                 className={`${styles.movie}`}
-                                onClick={() => showMovie(ele.name)} >
+                                onClick={() => showMovie(ele.id)} >
                                 <Suspense fallback={<span></span>}>
-                                    <Img src={`./assets/images/stars.jpg`} />
+                                    <Img src={`https://image.tmdb.org/t/p/w400/${ele.poster_path}`} />
                                     <div className={styles.data}>
                                         <div>{ele.name}</div>
                                         <div>{ele.releaseDate}</div>
@@ -173,6 +178,8 @@ const UseMovieGallery = ({
                 const topRated = await topRatedRaw.json();
                 const upcoming = await upcomingRaw.json();
 
+                console.log(trending.results)
+
                 dispatch(setTrending(trending.results.slice(0, 6)));
                 dispatch(setPopular(popular.results.slice(0, 6)));
                 dispatch(setTopRated(topRated.results.slice(0, 6)));
@@ -204,18 +211,34 @@ const UseMovieGallery = ({
     })
 
     useEffect(() => {
-        let objectToSave = appMovies.trending;
+        let objectToSave
+
+        switch (selectedMovies) {
+            case SELECTED_PAGES.TRENDING:
+                objectToSave = appMovies.trending;
+                break;
+            case SELECTED_PAGES.POPULAR:
+                objectToSave = appMovies.popular;
+                break;
+            case SELECTED_PAGES.UPCOMING:
+                objectToSave = appMovies.upComing;
+                break;
+            default:
+                objectToSave = appMovies.topRated;
+                break;
+        }
+
+
         objectToSave = objectToSave.map((obj: any) => ({
             currentTransition: 0,
             name: obj.original_title,
             releaseDate: obj.release_date,
+            id: obj.id,
+            poster_path: obj.poster_path,
         }))
         setMovies(objectToSave)
-    }, [appMovies])
 
-
-    //  w zaleznosci od zaznaczonej wartosci odswierzamy odpowiednie filmy do setMOvies
-    //          albo przeniesc currentDisplay do contekstu zeby bylo dla całej app
+    }, [appMovies, selectedMovies])
 
     return {
         getMovies,

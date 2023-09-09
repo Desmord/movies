@@ -16,7 +16,7 @@ const AppSlice = createSlice({
     initialState,
     reducers: {
         getApp: (state) => { return state },
-        setApp: (state, action: PayloadAction<any>) => {
+        setAppSelectedPage: (state, action: PayloadAction<any>) => {
             state.selectedPage = action.payload
         },
     }
@@ -24,7 +24,7 @@ const AppSlice = createSlice({
 
 export const {
     getApp,
-    setApp,
+    setAppSelectedPage,
 } = AppSlice.actions;
 
 export default AppSlice.reducer;

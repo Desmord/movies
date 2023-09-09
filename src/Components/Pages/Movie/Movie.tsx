@@ -1,10 +1,92 @@
+import { useEffect, useState } from 'react';
 import { useParams } from 'react-router';
 import { Suspense } from 'react';
 
 import Img from './Img';
 
+type MovieType = {
+    name: string,
+    relaseDate: string,
+    runtime: number,
+    genres: string[],
+    overview: string,
+    rating: number,
+    director: string[],
+    writers: string[],
+    cast: string[],
+    posterPath: string,
+}
+
 const Movie = () => {
-    const { name } = useParams();
+    const [movie, setMovie] = useState<MovieType | null>(null);
+    const { id } = useParams();
+
+    const refreshMovie = async () => {
+        const options = {
+            method: 'GET',
+            headers: {
+                accept: 'application/json',
+                Authorization: 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI1ZjlhMDIyMGEzNmIwZDY5NmNjMTdmYTZjMTkzMDc4ZiIsInN1YiI6IjY0ZWRmNWM3MDZmOTg0MDBhZTRhY2MyNCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.V64bvbninT41jRifOpdjlTtYPDcggdLdeXheIuhrRUg'
+            }
+        };
+
+        try {
+
+            const movieDataRaw = await fetch(`https://api.themoviedb.org/3/movie/${id}?language=en-US`, options);
+            const movieData = await movieDataRaw.json();
+
+            const movieCreditsRaw = await fetch(`https://api.themoviedb.org/3/movie/${id}/credits`, options);
+            const movieCredits = await movieCreditsRaw.json();
+            const allCrew = movieCredits.crew;
+
+            let movieCast: string[] = movieCredits.cast.map((cast: { name: string }) => cast.name).slice(0, 8);
+            let writers: string[] = allCrew
+                .filter((crew: { job: string }) => crew.job === `Writer` || crew.job === `Screenplay` ? true : false)
+                .map((crew: { name: string }) => crew.name)
+            let director: string[] = allCrew
+                .filter((crew: { job: string }) => crew.job === `Director` ? true : false)
+                .map((crew: { name: string }) => crew.name)
+
+            setMovie(prev => ({
+                name: movieData.original_title,
+                relaseDate: movieData.release_date,
+                runtime: movieData.runtime,
+                genres: movieData.genres.map((genre: { id: number, name: string }) => genre.name),
+                overview: movieData.overview,
+                rating: movieData.vote_average,
+                director: director,
+                writers: writers,
+                cast: movieCast,
+                posterPath: movieData.poster_path,
+            }))
+
+        } catch (err) {
+            console.log(err)
+        }
+    }
+
+    const formatDuration = (time: number): string => {
+        const hours = Math.floor(time / 60)
+        const minutes = time - (hours * 60)
+
+        return `${hours}h ${minutes}m`
+    }
+
+    const getCast = (title: string, cast: string[]) => {
+        return (
+            <div className='p-1 pl-0'>
+                <span className='text-lg font-bold'>{title}: </span>
+                {cast.map((cast: string, index: number) =>
+                    <span key={index} className='text-slate-400 text-sm pl-2 pr-2'>
+                        {cast}
+                    </span>)}
+            </div>
+        )
+    }
+
+    useEffect(() => {
+        refreshMovie()
+    }, [id])
 
     return (
         <div className='absolute md:relative w-full h-full 
@@ -16,7 +98,7 @@ const Movie = () => {
                 flex justify-center
                 p-4 col-span-1 w-full 
                 lg:block lg:p-2 lg:pt-40'>
-                    <Img src={`/assets/images/stars.jpg`} />
+                    <Img src={`https://image.tmdb.org/t/p/w400/${movie?.posterPath}`} />       
                 </span>
             </Suspense>
             <div className=' 
@@ -24,47 +106,34 @@ const Movie = () => {
             p-5 sm:p-10 
              lg:p-10 lg:pt-40 lg:col-span-2
             '>
-                <div className='text-3xl font-bold'>{name}</div>
+                <div className='text-3xl font-bold'>{movie?.name}</div>
+
                 <div className='text-sm pt-2 pb-2'>
-                    <span>2023-04-03</span>
-                    <span className='pl-5'>1h 40m</span>
+                    <span>{movie?.relaseDate}</span>
+                    <span className='pl-5'>{formatDuration(movie?.runtime ? movie.runtime : 0)}</span>
                 </div>
+
                 <div className='pt-2 pb-2 block'>
-                    <div className='float-left bg-red-600 text-xs rounded-lg p-1 mr-1 mt-1'>Category 1</div>
-                    <div className='float-left bg-red-600 text-xs rounded-lg p-1 mr-1 mt-1'>Category 2</div>
-                    <div className='float-left bg-red-600 text-xs rounded-lg p-1 mr-1 mt-1'>Category 3</div>
+                    {movie?.genres.map((genre: string, index: number) => (
+                        <div key={index} className='float-left bg-red-600 text-xs rounded-lg p-1 mr-1 mt-1'>
+                            {genre}
+                        </div>
+                    ))}
                 </div>
+
                 <div className='pt-4'>
-                    Lorem ipsum, dolor sit amet consectetur adipisicing elit.
-                    Deleniti porro sequi enim tempore. Odio deserunt fugit neque libero.
-                    Soluta inventore minima necessitatibus a ab! Possimus illo fuga quibusdam
-                    nihil odit beatae provident, quaerat nobis, et architecto a sapiente
-                    explicabo enim!
+                    {movie?.overview}
                 </div>
+
                 <div className='text-xl pt-2 pb-2'>
                     <span>Rating: </span>
-                    <span className='font-bold'> 7.3</span>
+                    <span className='font-bold'> {movie?.rating}</span>
                 </div>
-                <div className='p-1 pl-0'>
-                    <span className='text-lg font-bold'>Director: </span>
-                    <span className='text-slate-400 text-sm pl-2 pr-2'>Mikołaj Chojnacki</span>
-                    <span className='text-slate-400 text-sm pl-2 pr-2'>Mikołaj Chojnacki</span>
-                </div>
-                <div className='p-1 pl-0'>
-                    <span className='text-lg font-bold'>Writers:</span>
-                    <span className='text-slate-400 text-sm pl-2 pr-2'>Mikołaj Chojnacki</span>
-                    <span className='text-slate-400 text-sm pl-2 pr-2'>Mikołaj Chojnacki</span>
-                    <span className='text-slate-400 text-sm pl-2 pr-2'>Mikołaj Chojnacki</span>
-                </div>
-                <div className='p-1 pl-0'>
-                    <span className='text-lg font-bold'>Cast:</span>
-                    <span className='text-slate-400 text-sm pl-2 pr-2'>Mikołaj Chojnacki</span>
-                    <span className='text-slate-400 text-sm pl-2 pr-2'>Mikołaj Chojnacki</span>
-                    <span className='text-slate-400 text-sm pl-2 pr-2'>Mikołaj Chojnacki</span>
-                    <span className='text-slate-400 text-sm pl-2 pr-2'>Mikołaj Chojnacki</span>
-                    <span className='text-slate-400 text-sm pl-2 pr-2'>Mikołaj Chojnacki</span>
-                    <span className='text-slate-400 text-sm pl-2 pr-2'>Mikołaj Chojnacki</span>
-                </div>
+
+                {movie?.director ? getCast(`Director`, movie.director) : ``}
+                {movie?.writers ? getCast(`Writers`, movie.writers) : ``}
+                {movie?.cast ? getCast(`Cast`, movie.cast) : ``}
+
             </div>
         </div>
     )

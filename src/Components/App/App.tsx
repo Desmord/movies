@@ -25,7 +25,7 @@ function App() {
             <Route path='/popular' element={<MovieGallery text={`Popular`} />} />
             <Route path='/toprated' element={<MovieGallery text={`Top Rated`} />} />
             <Route path='/upcoming' element={<MovieGallery text={`Upcoming`} />} />
-            <Route path='/movie/:name' element={<Movie />} />
+            <Route path='/movie/:id' element={<Movie />} />
             <Route path='/' element={<NotFound />} />
           </Routes>
         </BrowserRouter>

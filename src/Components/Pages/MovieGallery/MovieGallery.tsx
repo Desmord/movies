@@ -1,18 +1,10 @@
-import { useState, useRef, useEffect } from "react"
-import { useSelector } from 'react-redux';
+import { useState, useRef} from "react"
 import UseMovieGallery from "./UseMovieGallery";
 
 import styles from './MovieGallery.module.scss';
 
-type MoviesType = {
-    name: string,
-    currentTransition: number,
-    releaseDate: string,
-}
-
 const MovieGallery = ({ text }: { text: string }) => {
 
-    const [timeSelected, setTimeSelected] = useState(`day`);
     const [currentSlide, setCurrentSlide] = useState(0);
     const container = useRef(null)
 
