@@ -26,7 +26,7 @@ function App() {
             <Route path='/toprated' element={<MovieGallery text={`Top Rated`} />} />
             <Route path='/upcoming' element={<MovieGallery text={`Upcoming`} />} />
             <Route path='/movie/:id' element={<Movie />} />
-            <Route path='/' element={<NotFound />} />
+            <Route path='*' element={<NotFound />} />
           </Routes>
         </BrowserRouter>
       </Provider>

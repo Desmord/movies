@@ -10,7 +10,7 @@ const Img = ({ src }: { src: string }) => {
             lg:w-[300px]
             lg:aspect-[1/1.66]
             aspect-[1/1.66]
-            " src={src} alt="movie"></img>
+            " src={src ? src : ``} alt="movie"></img>
     )
 }
 

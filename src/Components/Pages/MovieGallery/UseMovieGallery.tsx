@@ -43,6 +43,7 @@ const UseMovieGallery = ({
     const selectedMovies = useSelector((state: any) => state.app.selectedPage)
 
     const [movies, setMovies] = useState<MoviesType[]>([])
+    const [isDataLoaded, setIsDataLoades] = useState(false);
 
     const updateCurrentTransition = (moviesToupdate: MoviesType[]) => {
         return moviesToupdate.map((movie) => {
@@ -126,18 +127,18 @@ const UseMovieGallery = ({
                 {
                     movies.map((ele: MoviesType, index: number) => {
                         return (
-                            <div
-                                key={index}
-                                className={`${styles.movie}`}
-                                onClick={() => showMovie(ele.id)} >
-                                <Suspense fallback={<span></span>}>
+                            <Suspense key={index} fallback={<div>Wczytywanie...</div>}>
+                                <div
+                                    key={index}
+                                    className={`${styles.movie}`}
+                                    onClick={() => showMovie(ele.id)} >
                                     <Img src={`https://image.tmdb.org/t/p/w400/${ele.poster_path}`} />
                                     <div className={styles.data}>
                                         <div>{ele.name}</div>
                                         <div>{ele.releaseDate}</div>
                                     </div>
-                                </Suspense>
-                            </div >
+                                </div >
+                            </Suspense>
                         )
                     })
                 }
@@ -178,12 +179,10 @@ const UseMovieGallery = ({
                 const topRated = await topRatedRaw.json();
                 const upcoming = await upcomingRaw.json();
 
-                console.log(trending.results)
-
                 dispatch(setTrending(trending.results.slice(0, 6)));
                 dispatch(setPopular(popular.results.slice(0, 6)));
                 dispatch(setTopRated(topRated.results.slice(0, 6)));
-                dispatch(setUpComing(upcoming.results.slice(0, 7)));
+                dispatch(setUpComing(upcoming.results.slice(0, 6)));
 
 
             } catch (err) {
@@ -198,7 +197,7 @@ const UseMovieGallery = ({
         timeRef.current = setTimeout(() => {
             slide()
             startSlide()
-        }, 4000)
+        }, 3500)
     }
 
     useEffect(() => {
@@ -240,7 +239,32 @@ const UseMovieGallery = ({
 
     }, [appMovies, selectedMovies])
 
+    useEffect(() => {
+        switch (selectedMovies) {
+            case SELECTED_PAGES.TRENDING:
+                if (appMovies.trending[0])
+                    setIsDataLoades(true)
+                break;
+            case SELECTED_PAGES.POPULAR:
+                if (appMovies.popular[0])
+                    setIsDataLoades(true)
+                break;
+            case SELECTED_PAGES.UPCOMING:
+                if (appMovies.upComing[0])
+                    setIsDataLoades(true)
+                break;
+            case SELECTED_PAGES.TOP_RATED:
+                if (appMovies.topRated[0])
+                    setIsDataLoades(true)
+                break;
+            default:
+                setIsDataLoades(false)
+                break;
+        }
+    }, [appMovies])
+
     return {
+        isDataLoaded,
         getMovies,
         showMovie
     }

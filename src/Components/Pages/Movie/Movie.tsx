@@ -3,6 +3,7 @@ import { useParams } from 'react-router';
 import { Suspense } from 'react';
 
 import Img from './Img';
+import Loader from '../../Loader/Loader';
 
 type MovieType = {
     name: string,
@@ -19,6 +20,7 @@ type MovieType = {
 
 const Movie = () => {
     const [movie, setMovie] = useState<MovieType | null>(null);
+    const [isDataLoaded, setIsDataLoades] = useState(false);
     const { id } = useParams();
 
     const refreshMovie = async () => {
@@ -88,55 +90,70 @@ const Movie = () => {
         refreshMovie()
     }, [id])
 
-    return (
-        <div className='absolute md:relative w-full h-full 
+    useEffect(() => {
+        if (movie?.posterPath) {
+            setIsDataLoades(true)
+        }
+    }, [movie])
+
+    return isDataLoaded ?
+        (
+            <Suspense>
+                <div className='absolute md:relative w-full h-full 
         grid  grid-cols-1 grid-rows-[320px,1fr]
         col-span-1 md:col-span-4 lg:col-span-2 xl:col-span-3
         lg:grid-cols-3'>
-            <Suspense fallback={<span></span>}>
-                <span className='
+                    <Suspense fallback={<span></span>}>
+                        <span className='
                 flex justify-center
                 p-4 col-span-1 w-full 
                 lg:block lg:p-2 lg:pt-40'>
-                    <Img src={`https://image.tmdb.org/t/p/w400/${movie?.posterPath}`} />       
-                </span>
-            </Suspense>
-            <div className=' 
+                            <Img src={`https://image.tmdb.org/t/p/w400/${movie?.posterPath}`} />
+                        </span>
+                    </Suspense>
+                    <div className=' 
             col-span-1 flex flex-col
             p-5 sm:p-10 
              lg:p-10 lg:pt-40 lg:col-span-2
             '>
-                <div className='text-3xl font-bold'>{movie?.name}</div>
+                        <div className='text-3xl font-bold'>{movie?.name}</div>
 
-                <div className='text-sm pt-2 pb-2'>
-                    <span>{movie?.relaseDate}</span>
-                    <span className='pl-5'>{formatDuration(movie?.runtime ? movie.runtime : 0)}</span>
-                </div>
-
-                <div className='pt-2 pb-2 block'>
-                    {movie?.genres.map((genre: string, index: number) => (
-                        <div key={index} className='float-left bg-red-600 text-xs rounded-lg p-1 mr-1 mt-1'>
-                            {genre}
+                        <div className='text-sm pt-2 pb-2'>
+                            <span>{movie?.relaseDate}</span>
+                            <span className='pl-5'>{formatDuration(movie?.runtime ? movie.runtime : 0)}</span>
                         </div>
-                    ))}
+
+                        <div className='pt-2 pb-2 block'>
+                            {movie?.genres.map((genre: string, index: number) => (
+                                <div key={index} className='float-left bg-red-600 text-xs rounded-lg p-1 mr-1 mt-1'>
+                                    {genre}
+                                </div>
+                            ))}
+                        </div>
+
+                        <div className='pt-4'>
+                            {movie?.overview}
+                        </div>
+
+                        <div className='text-xl pt-2 pb-2'>
+                            <span>Rating: </span>
+                            <span className='font-bold'> {movie?.rating}</span>
+                        </div>
+
+                        {movie?.director ? getCast(`Director`, movie.director) : ``}
+                        {movie?.writers ? getCast(`Writers`, movie.writers) : ``}
+                        {movie?.cast ? getCast(`Cast`, movie.cast) : ``}
+
+                    </div>
                 </div>
+            </Suspense>
 
-                <div className='pt-4'>
-                    {movie?.overview}
-                </div>
-
-                <div className='text-xl pt-2 pb-2'>
-                    <span>Rating: </span>
-                    <span className='font-bold'> {movie?.rating}</span>
-                </div>
-
-                {movie?.director ? getCast(`Director`, movie.director) : ``}
-                {movie?.writers ? getCast(`Writers`, movie.writers) : ``}
-                {movie?.cast ? getCast(`Cast`, movie.cast) : ``}
-
-            </div>
+        ) : <div className='absolute md:relative w-full h-full 
+        col-span-1 md:col-span-4 lg:col-span-2 xl:col-span-3
+        flex justify-center items-start pt-36 mt-10
+       '>
+            <Loader />
         </div>
-    )
 }
 
 export default Movie
