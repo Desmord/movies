@@ -184,7 +184,6 @@ const UseMovieGallery = ({
                 dispatch(setTopRated(topRated.results.slice(0, 6)));
                 dispatch(setUpComing(upcoming.results.slice(0, 6)));
 
-
             } catch (err) {
                 console.log(err)
             }
@@ -228,18 +227,29 @@ const UseMovieGallery = ({
         }
 
 
-        objectToSave = objectToSave.map((obj: any) => ({
-            currentTransition: 0,
-            name: obj.original_title,
-            releaseDate: obj.release_date,
-            id: obj.id,
-            poster_path: obj.poster_path,
-        }))
+        objectToSave = objectToSave.map((obj: any, index: number) => {
+            return ({
+                currentTransition: movies[index]?.currentTransition ? movies[index]?.currentTransition : 0,
+                name: obj.original_title,
+                releaseDate: obj.release_date,
+                id: obj.id,
+                poster_path: obj.poster_path,
+            })
+        })
+
         setMovies(objectToSave)
 
     }, [appMovies, selectedMovies])
 
     useEffect(() => {
+        if (movies.length) {
+
+        }
+    }, [movies])
+
+
+    useEffect(() => {
+
         switch (selectedMovies) {
             case SELECTED_PAGES.TRENDING:
                 if (appMovies.trending[0])
@@ -261,6 +271,7 @@ const UseMovieGallery = ({
                 setIsDataLoades(false)
                 break;
         }
+
     }, [appMovies])
 
     return {
